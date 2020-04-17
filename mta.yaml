@@ -1,0 +1,47 @@
+_schema-version: '3.1'
+ID: warehouse
+version: 1.0.0
+description: "A Warehouse project."
+parameters:
+  enable-parallel-deployments: true  
+
+modules:
+ # --------------------- SERVER MODULE ------------------------
+ - name: warehouse-srv
+   deployed-after:
+    - db
+   type: nodejs
+   path: srv
+   parameters:
+     memory: 512M
+     disk-quota: 1024M
+   requires:
+    - name: warehouse-db
+   provides:
+    - name: srv-api
+      properties:
+        srv-url: ${default-url}
+
+ # -------------------- DB MODULE ------------------------
+ - name: db
+   type: hdb
+   path: db  
+   parameters:
+     memory: 256M
+     disk-quota: 512M
+   requires:
+    - name: warehouse-db
+   provides:
+    - name: db
+
+
+resources:
+ - name: warehouse-db
+   type: com.sap.xs.hdi-container
+   parameters:
+     service: hanatrial
+     service-plan: hdi-shared
+     config: { schema: WAREHOUSE_SCP }
+   properties:
+     hdi-service-name: ${service-name}
+
