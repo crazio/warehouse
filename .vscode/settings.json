@@ -2,6 +2,10 @@
   "files.exclude": {
     "**/.gitignore": true,
     "**/.git": true,
-    "**/.vscode": true
+    "**/.vscode": true,
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
   }
 }

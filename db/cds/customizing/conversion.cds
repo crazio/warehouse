@@ -11,6 +11,6 @@ entity Conversions {
     key unitTo       : common.Unit;
         unitFromCode : Association to customizing.Units on unitFromCode.code = unitFrom;
         unitToCode   : Association to customizing.Units on unitToCode.code = unitTo;
-        numerator    : common.Factor;
-        denominator  : common.Factor;
+        numerator    : common.Factor not null;
+        denominator  : common.Factor not null;
 }

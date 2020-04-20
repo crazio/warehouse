@@ -1,6 +1,7 @@
 namespace com.leverx.warehouse;
 
 using from './hu';
-using from './material';
+using from './product';
 using from './packaging';
 using from './stock';
+using from './item';
