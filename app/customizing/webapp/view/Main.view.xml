@@ -29,7 +29,11 @@
                                 <core:Icon src="sap-icon://measuring-point" size="2.8rem" color="Default" class="sapUiTinyMarginBottom"/>
                                 <Title text="{i18n>defineUoM}" wrapping="true" titleStyle="H3"/>
                                 <Text text="{i18n>defineUoMText}" wrapping="true"/>
-                                <Link text="{i18n>accessTool}" press="onLinkPress" id="uomLink" class="sapUiTinyMarginTop"/>
+                                <Link text="{i18n>accessTool}" press="onLinkPress" class="sapUiTinyMarginTop">
+                                    <customData>
+                                        <core:CustomData key="linkName" value="uomLink"/>
+                                    </customData>
+                                </Link>
                             </VBox>
                         </f:GridListItem>
                         <f:GridListItem>
@@ -40,7 +44,11 @@
                                 <core:Icon src="sap-icon://share" size="2.8rem" color="Default" class="sapUiTinyMarginBottom"/>
                                 <Title text="{i18n>defineConversions}" wrapping="true" titleStyle="H3"/>
                                 <Text text="{i18n>defineConversionsText}" wrapping="true"/>
-                                <Link text="{i18n>accessTool}" press="onLinkPress" id="convLink" class="sapUiTinyMarginTop"/>
+                                <Link text="{i18n>accessTool}" press="onLinkPress" class="sapUiTinyMarginTop">
+                                    <customData>
+                                        <core:CustomData key="linkName" value="convLink"/>
+                                    </customData>
+                                </Link>
                             </VBox>
                         </f:GridListItem>
                     </f:GridList>
@@ -60,7 +68,11 @@
                                 <core:Icon src="sap-icon://numbered-text" size="2.8rem" color="Default" class="sapUiTinyMarginBottom"/>
                                 <Title text="{i18n>defineNR}" wrapping="true" titleStyle="H3"/>
                                 <Text text="{i18n>defineNRText}" wrapping="true"/>
-                                <Link text="{i18n>accessTool}" press="onLinkPress" id="nrLink" class="sapUiTinyMarginTop"/>
+                                <Link text="{i18n>accessTool}" press="onLinkPress" class="sapUiTinyMarginTop">
+                                    <customData>
+                                        <core:CustomData key="linkName" value="nrLink"/>
+                                    </customData>
+                                </Link>
                             </VBox>
                         </f:GridListItem>
                     </f:GridList>

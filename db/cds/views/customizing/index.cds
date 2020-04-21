@@ -1,0 +1,1 @@
+namespace com.leverx.warehouse;

@@ -1,0 +1,35 @@
+<mvc:View controllerName="customizing.controller.Conversion" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns:core="sap.ui.core" 
+    xmlns:l="sap.ui.layout" 
+    xmlns:table="sap.ui.table" 
+    xmlns="sap.m" id="conversionView" displayBlock="true">
+    <Page enableScrolling="false" showHeader="true" showNavButton="true" navButtonPress="onNavBack" title="{i18n>defineConversions}" titleAlignment="Center">
+        <table:Table rows="{ path: '/Conversions',
+                             parameters: { $$updateGroupId: 'conversionGroup' }}" selectionMode="MultiToggle" visibleRowCount="7" ariaLabelledBy="title">
+            <table:extension>
+                <OverflowToolbar>
+                    <Title text="{i18n>conversions}"/>
+                </OverflowToolbar>
+            </table:extension>
+            <table:columns>
+                <table:Column width="12rem">
+                    <Label text="{i18n>unitFrom}"/>
+                    <table:template>
+                        <ComboBox selectedKey="{unitFrom}" items="{/Units}" width="12rem" selectionChange="onUnitSelection">
+                            <core:Item text="{name}" key="{code}"/>
+                        </ComboBox>
+                    </table:template>
+                </table:Column>
+                <table:Column width="12rem">
+                    <Label text="{i18n>unitTo}"/>
+                    <table:template>
+                        <ComboBox selectedKey="{unitTo}" items="{/Units}" width="12rem" selectionChange="onUnitSelection">
+                            <core:Item text="{name}" key="{code}"/>
+                        </ComboBox>
+                    </table:template>
+                </table:Column>
+            </table:columns>
+        </table:Table>
+    </Page>
+</mvc:View>

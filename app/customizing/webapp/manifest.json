@@ -11,7 +11,7 @@
     "description": "{{appDescription}}",
     "dataSources": {
       "mainService": {
-        "uri": "/CustomizingService/",
+        "uri": "/customizing/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"
@@ -82,7 +82,8 @@
         "dataSource": "mainService",
         "settings": {
           "autoExpandSelect": true,
-          "synchronizationMode": "None"
+          "synchronizationMode": "None",
+          "operationMode": "Server"
         }
       },
       "i18n": {
@@ -117,6 +118,11 @@
           "name": "RouteMain",
           "pattern": "",
           "target": ["TargetMain"]
+        },
+        {
+          "name": "RouteConversion",
+          "pattern": "conversions",
+          "target": ["TargetConversion"]
         }
       ],
       "targets": {
@@ -125,6 +131,12 @@
           "clearControlAggregation": false,
           "viewName": "Main",
           "viewId": "mainView"
+        },
+        "TargetConversion": {
+          "viewType": "XML",
+          "clearControlAggregation": false,
+          "viewName": "Conversion",
+          "viewId": "conversionView"
         }
       }
     }
