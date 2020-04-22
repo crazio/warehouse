@@ -6,27 +6,50 @@
     xmlns="sap.m" id="conversionView" displayBlock="true">
     <Page enableScrolling="false" showHeader="true" showNavButton="true" navButtonPress="onNavBack" title="{i18n>defineConversions}" titleAlignment="Center">
         <table:Table rows="{ path: '/Conversions',
-                             parameters: { $$updateGroupId: 'conversionGroup' }}" selectionMode="MultiToggle" visibleRowCount="7" ariaLabelledBy="title">
+                             parameters: { $$updateGroupId: 'conversionGroup' }}" selectionMode="MultiToggle" visibleRowCount="20" ariaLabelledBy="title">
             <table:extension>
+                <HBox class="sapUiSmallMargin">
+                    <items>
+                        <core:Icon src="sap-icon://share" alt="Cart" size="1.25rem"/>
+                        <Title text="{i18n>defineConversions}" titleStyle="H3" class="sapUiTinyMarginBeginEnd"/>
+                    </items>
+                </HBox>
                 <OverflowToolbar>
                     <Title text="{i18n>conversions}"/>
+                    <ToolbarSpacer/>
+                    <Button icon="sap-icon://add" text="{i18n>addEntry}" press="onAddPress"/>
+                    <Button icon="sap-icon://delete" text="{i18n>deleteEntry}" press="onDeletePress"/>
+                    <Button icon="sap-icon://save" id="idConvSave" text="{i18n>saveChanges}" press="onSavePress"/>
+                    <Button icon="sap-icon://cancel" id="idConvCancel" text="{i18n>cancelChanges}" press="onCancelPress"/>
                 </OverflowToolbar>
             </table:extension>
             <table:columns>
-                <table:Column width="12rem">
+                <table:Column width="20%">
                     <Label text="{i18n>unitFrom}"/>
                     <table:template>
-                        <ComboBox selectedKey="{unitFrom}" items="{/Units}" width="12rem" selectionChange="onUnitSelection">
+                        <ComboBox selectedKey="{unitFrom}" items="{/Units}" width="100%" selectionChange="onUnitSelection">
                             <core:Item text="{name}" key="{code}"/>
                         </ComboBox>
                     </table:template>
                 </table:Column>
-                <table:Column width="12rem">
+                <table:Column width="20%">
                     <Label text="{i18n>unitTo}"/>
                     <table:template>
-                        <ComboBox selectedKey="{unitTo}" items="{/Units}" width="12rem" selectionChange="onUnitSelection">
+                        <ComboBox selectedKey="{unitTo}" items="{/Units}" width="100%" selectionChange="onUnitSelection">
                             <core:Item text="{name}" key="{code}"/>
                         </ComboBox>
+                    </table:template>
+                </table:Column>
+                <table:Column width="30%">
+                    <Label text="{i18n>numerator}"/>
+                    <table:template>
+                        <Input type="Number" value="{path: 'numerator', type: 'sap.ui.model.type.Integer'}" onLiveChange="onInputValueChange"/>
+                    </table:template>
+                </table:Column>
+                <table:Column width="30%">
+                    <Label text="{i18n>denominator}"/>
+                    <table:template>
+                        <Input type="Number" value="{path: 'denominator', type: 'sap.ui.model.type.Integer'}" onLiveChange="onInputValueChange"/>
                     </table:template>
                 </table:Column>
             </table:columns>
