@@ -6,7 +6,9 @@
     xmlns="sap.m" id="conversionView" displayBlock="true">
     <Page enableScrolling="false" showHeader="true" showNavButton="true" navButtonPress="onNavBack" title="{i18n>defineConversions}" titleAlignment="Center">
         <table:Table rows="{ path: '/Conversions',
-                             parameters: { $$updateGroupId: 'conversionGroup' }}" selectionMode="MultiToggle" visibleRowCount="20" ariaLabelledBy="title">
+                             parameters: { $$updateGroupId: 'convGroup' },
+                             sorter: { path: 'unitFrom' }
+                           }" selectionMode="MultiToggle" visibleRowCount="20" ariaLabelledBy="title" id="idConvTable">
             <table:extension>
                 <HBox class="sapUiSmallMargin">
                     <items>
@@ -14,11 +16,11 @@
                         <Title text="{i18n>defineConversions}" titleStyle="H3" class="sapUiTinyMarginBeginEnd"/>
                     </items>
                 </HBox>
-                <OverflowToolbar>
+                <OverflowToolbar id="idToolBar">
                     <Title text="{i18n>conversions}"/>
                     <ToolbarSpacer/>
-                    <Button icon="sap-icon://add" text="{i18n>addEntry}" press="onAddPress"/>
-                    <Button icon="sap-icon://delete" text="{i18n>deleteEntry}" press="onDeletePress"/>
+                    <Button icon="sap-icon://add" id="idConvAdd" text="{i18n>addEntry}" press="onAddPress"/>
+                    <Button icon="sap-icon://delete" id="idConvDelete" text="{i18n>deleteEntry}" press="onDeletePress"/>
                     <Button icon="sap-icon://save" id="idConvSave" text="{i18n>saveChanges}" press="onSavePress"/>
                     <Button icon="sap-icon://cancel" id="idConvCancel" text="{i18n>cancelChanges}" press="onCancelPress"/>
                 </OverflowToolbar>
@@ -43,13 +45,13 @@
                 <table:Column width="30%">
                     <Label text="{i18n>numerator}"/>
                     <table:template>
-                        <Input type="Number" value="{path: 'numerator', type: 'sap.ui.model.type.Integer'}" onLiveChange="onInputValueChange"/>
+                        <Input type="Number" value="{path: 'numerator', type: 'sap.ui.model.type.Integer'}" liveChange="onInputValueChange"/>
                     </table:template>
                 </table:Column>
                 <table:Column width="30%">
                     <Label text="{i18n>denominator}"/>
                     <table:template>
-                        <Input type="Number" value="{path: 'denominator', type: 'sap.ui.model.type.Integer'}" onLiveChange="onInputValueChange"/>
+                        <Input type="Number" value="{path: 'denominator', type: 'sap.ui.model.type.Integer'}" liveChange="onInputValueChange"/>
                     </table:template>
                 </table:Column>
             </table:columns>

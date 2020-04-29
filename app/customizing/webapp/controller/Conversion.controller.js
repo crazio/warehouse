@@ -1,13 +1,59 @@
 sap.ui.define(
-  ["customizing/controller/BaseController", "sap/m/MessageBox"],
-  function (BaseController, MessageBox) {
+  [
+    "customizing/controller/BaseController",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast",
+  ],
+  function (BaseController, MessageBox, MessageToast) {
     "use strict";
 
     return BaseController.extend("customizing.controller.Conversion", {
       onInit: function () {
+        this.BATCH_GROUP_CONV = "convGroup";
         this.getRouter()
           .getRoute("RouteConversion")
           .attachPatternMatched(this._onRouteMatched, this);
+      },
+
+      _getTableRowsBinding: function () {
+        return this.getView().byId("idConvTable").getBinding("rows");
+      },
+
+      _setControlBusyById: function (sControl, bBusy) {
+        this.getView().byId(sControl).setBusy(bBusy);
+      },
+
+      _onSaveSuccess: function () {
+        this._setUIBusy(false);
+        MessageToast.show(this.getI18Text("saveSuccess"));
+        this._changeSaveCancelState();
+      },
+
+      _onSaveError: function (oError) {
+        this._setUIBusy(false);
+        MessageBox.error(oError.message);
+      },
+
+      _submitBatch: function () {
+        this.getModel()
+          .submitBatch(this.BATCH_GROUP_CONV)
+          .then(this._onSaveSuccess.bind(this), this._onSaveError.bind(this));
+      },
+
+      _setControlEnabled: function (sControl, bEnabled) {
+        this.getView().byId(sControl).setEnabled(bEnabled);
+      },
+
+      _setButtonsEnabled: function (bEnabled) {
+        this._setControlEnabled("idConvAdd", bEnabled);
+        this._setControlEnabled("idConvDelete", bEnabled);
+        this._setControlEnabled("idConvSave", bEnabled);
+        this._setControlEnabled("idConvCancel", bEnabled);
+      },
+
+      _setUIBusy: function (bBusy) {
+        this._setControlBusyById("idConvTable", bBusy);
+        this._setButtonsEnabled(!bBusy);
       },
 
       _onRouteMatched: function () {
@@ -23,8 +69,8 @@ sap.ui.define(
       },
 
       _setEnabledSaveCancel: function (bEnabled) {
-        this.getView().byId("idConvSave").setEnabled(bEnabled);
-        this.getView().byId("idConvCancel").setEnabled(bEnabled);
+        this._setControlEnabled("idConvSave", bEnabled);
+        this._setControlEnabled("idConvCancel", bEnabled);
       },
 
       _changeSaveCancelState: function () {
@@ -64,7 +110,7 @@ sap.ui.define(
 
       _onCloseUnsavedDataDialog: function (sAction) {
         if (sAction === MessageBox.Action.OK) {
-          this._resetPendingChanges("conversionGroup");
+          this._resetPendingChanges(this.BATCH_GROUP_CONV);
           BaseController.prototype.onNavBack.call(this);
         }
       },
@@ -82,6 +128,8 @@ sap.ui.define(
       onNavBack: function () {
         if (this._checkPendingChanges()) {
           this._showUnsavedDataDialog();
+        } else {
+          BaseController.prototype.onNavBack.call(this);
         }
       },
 
@@ -89,13 +137,37 @@ sap.ui.define(
         this._changeSaveCancelState();
       },
 
-      onAddPress: function () {},
+      onAddPress: function (_) {
+        var oBinding = this._getTableRowsBinding();
+        oBinding.create({
+          unitFrom: "",
+          unitTo: "",
+          numerator: 0,
+          denominator: 0,
+        });
+        this._setEnabledSaveCancel();
+      },
 
-      onDeletePress: function () {},
+      onDeletePress: function (_) {
+        var oTable = this.getView().byId("idConvTable");
+        $.each(oTable.getSelectedIndices().reverse(), function (
+          _,
+          iContextIndex
+        ) {
+          oTable.getContextByIndex(iContextIndex).delete();
+        });
+        oTable.setSelectedIndex(-1);
+      },
 
-      onCancelPress: function () {},
+      onCancelPress: function (_) {
+        this._resetPendingChanges(this.BATCH_GROUP_CONV);
+        this._changeSaveCancelState();
+      },
 
-      onSavePress: function () {},
+      onSavePress: function (_) {
+        this._setUIBusy(true);
+        this._submitBatch();
+      },
     });
   }
 );
