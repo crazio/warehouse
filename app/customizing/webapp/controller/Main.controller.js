@@ -6,7 +6,7 @@ sap.ui.define(["customizing/controller/BaseController"], function (
   return BaseController.extend("customizing.controller.Main", {
     onInit: function () {
       this._LINK_MAPPER = {
-        uomLink: "value1",
+        uomLink: "RouteUnitMaster",
         convLink: "RouteConversion",
         nrLink: "value3",
       };

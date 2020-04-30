@@ -6,6 +6,7 @@ using com.leverx.warehouse.Items as Items from './item';
 
 entity HandlingUnits : cuid, managed {
     number    : String(20) not null;
+    parent    : Association to HandlingUnits;
     packaging : Association to PackagingMaterials;
     items     : Composition of many Items on items.parent = $self;
 }

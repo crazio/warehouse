@@ -15,6 +15,10 @@ sap.ui.define(
           .attachPatternMatched(this._onRouteMatched, this);
       },
 
+      _onRouteMatched: function () {
+        this._setEnabledSaveCancel(false);
+      },
+
       _getTableRowsBinding: function () {
         return this.getView().byId("idConvTable").getBinding("rows");
       },
@@ -54,10 +58,6 @@ sap.ui.define(
       _setUIBusy: function (bBusy) {
         this._setControlBusyById("idConvTable", bBusy);
         this._setButtonsEnabled(!bBusy);
-      },
-
-      _onRouteMatched: function () {
-        this._setEnabledSaveCancel(false);
       },
 
       _resetPendingChanges: function (sGroupId) {

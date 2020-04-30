@@ -1,0 +1,20 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" controllerName="customizing.controller.UnitMaster" displayBlock="true" 
+    xmlns="sap.m">
+    <Page showHeader="false" showNavButton="false">
+        <List id="idListUnit" width="auto" items="{
+                path: '/Units',
+                sorter : { path: 'code' }
+            }" selectionChange="onUnitSelect" updateFinished="onListUpdateFinished" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true">
+            <headerToolbar>
+                <OverflowToolbar>
+                    <Button press="onNavBack" icon="sap-icon://nav-back"/>
+                    <Title text="{i18n>unitList}" level="H2"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </headerToolbar>
+            <items>
+                <ObjectListItem type="Navigation" title="{code}" number="{name}"/>
+            </items>
+        </List>
+    </Page>
+</mvc:View>

@@ -1,0 +1,4 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" controllerName="customizing.controller.UnitDetail" displayBlock="true" 
+    xmlns="sap.m">
+    
+</mvc:View>
