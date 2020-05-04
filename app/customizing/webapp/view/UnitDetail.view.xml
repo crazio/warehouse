@@ -1,4 +1,6 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" controllerName="customizing.controller.UnitDetail" displayBlock="true" 
     xmlns="sap.m">
-    
+    <Page showHeader="false" showNavButton="false" id="idDetailUnitPage">
+        <Label text="{name}"/>
+    </Page>
 </mvc:View>

@@ -4,21 +4,46 @@ sap.ui.define(["customizing/controller/BaseController"], function (
   "use strict";
 
   return BaseController.extend("customizing.controller.UnitMaster", {
-    onListUpdateFinished: function (oEvent) {
-      var oList = oEvent.getSource();
-      if (oList.getItems().length == 0) return;
-      oList.setSelectedItem(oList.getSelectedItem() || oList.getItems()[0]);
+    onInit: function () {
+      this.getRouter()
+        .getRoute("RouteUnitMaster")
+        .attachPatternMatched(this._onRouteMatched, this);
     },
 
-    onUnitSelect: function (oEvent) {
-      var oContext = oEvent.getParameter("listItem").getBindingContext();
-      debugger;
+    _onRouteMatched: function (_) {
+      this._setListItemFirstOrSelected(this.getView().byId("idListUnit"));
+    },
+
+    _deselectListItems: function () {
+      this.getView().byId("idListUnit").removeSelections(true);
+    },
+
+    _routeToDetail: function (sCode) {
       this.getRouter().navTo("RouteUnitDetail", {
-        code: oContext.getProperty("code")
+        code: sCode,
       });
     },
 
+    _setListItemFirstOrSelected: function (oList) {
+      if (oList.getItems().length == 0) return;
+      var oItem = oList.getSelectedItem() || oList.getItems()[0];
+      if (!oItem) return;
+      oList.setSelectedItem(oItem);
+      this._routeToDetail(oItem.getBindingContext().getProperty("code"));
+    },
+
+    onListUpdateFinished: function (oEvent) {
+      this._setListItemFirstOrSelected(oEvent.getSource());
+    },
+
+    onUnitSelect: function (oEvent) {
+      this._routeToDetail(
+        oEvent.getParameter("listItem").getBindingContext().getProperty("code")
+      );
+    },
+
     onNavBack: function (_) {
+      this._deselectListItems();
       this.getRouter().navTo("RouteMain", true);
     },
   });

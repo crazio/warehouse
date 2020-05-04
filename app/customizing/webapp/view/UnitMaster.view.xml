@@ -4,7 +4,7 @@
         <List id="idListUnit" width="auto" items="{
                 path: '/Units',
                 sorter : { path: 'code' }
-            }" selectionChange="onUnitSelect" updateFinished="onListUpdateFinished" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true">
+            }" selectionChange="onUnitSelect" updateFinished="onListUpdateFinished" mode="SingleSelectMaster" growing="false" growingScrollToLoad="true">
             <headerToolbar>
                 <OverflowToolbar>
                     <Button press="onNavBack" icon="sap-icon://nav-back"/>
