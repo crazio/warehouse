@@ -3,13 +3,14 @@
     <Page showHeader="false" showNavButton="false">
         <List id="idListUnit" width="auto" items="{
                 path: '/Units',
+                parameters: { $$updateGroupId: 'unitObjGroup' },
                 sorter : { path: 'code' }
             }" selectionChange="onUnitSelect" updateFinished="onListUpdateFinished" mode="SingleSelectMaster" growing="false" growingScrollToLoad="true">
             <headerToolbar>
                 <OverflowToolbar>
                     <Button press="onNavBack" icon="sap-icon://nav-back"/>
-                    <Title text="{i18n>unitList}" level="H2"/>
                     <ToolbarSpacer/>
+                    <Button press="onAddUnit" icon="sap-icon://add"/>
                 </OverflowToolbar>
             </headerToolbar>
             <items>

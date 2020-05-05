@@ -44,15 +44,11 @@ sap.ui.define(
           .then(this._onSaveSuccess.bind(this), this._onSaveError.bind(this));
       },
 
-      _setControlEnabled: function (sControl, bEnabled) {
-        this.getView().byId(sControl).setEnabled(bEnabled);
-      },
-
       _setButtonsEnabled: function (bEnabled) {
-        this._setControlEnabled("idConvAdd", bEnabled);
-        this._setControlEnabled("idConvDelete", bEnabled);
-        this._setControlEnabled("idConvSave", bEnabled);
-        this._setControlEnabled("idConvCancel", bEnabled);
+        this.setControlEnabled("idConvAdd", bEnabled);
+        this.setControlEnabled("idConvDelete", bEnabled);
+        this.setControlEnabled("idConvSave", bEnabled);
+        this.setControlEnabled("idConvCancel", bEnabled);
       },
 
       _setUIBusy: function (bBusy) {
@@ -69,8 +65,8 @@ sap.ui.define(
       },
 
       _setEnabledSaveCancel: function (bEnabled) {
-        this._setControlEnabled("idConvSave", bEnabled);
-        this._setControlEnabled("idConvCancel", bEnabled);
+        this.setControlEnabled("idConvSave", bEnabled);
+        this.setControlEnabled("idConvCancel", bEnabled);
       },
 
       _changeSaveCancelState: function () {

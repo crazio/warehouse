@@ -37,6 +37,10 @@ sap.ui.define(
       getI18Text: function (sTextKey, aParams) {
         return this.getResourceBundle().getText(sTextKey, aParams);
       },
+
+      setControlEnabled: function (sControl, bEnabled) {
+        this.getView().byId(sControl).setEnabled(bEnabled);
+      },
     });
   }
 );
