@@ -1,9 +1,9 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" controllerName="customizing.controller.UnitMaster" displayBlock="true" 
     xmlns="sap.m">
-    <Page showHeader="false" showNavButton="false">
+    <Page showHeader="false" showNavButton="false" id="idUnitMasterPage">
         <List id="idListUnit" width="auto" items="{
                 path: '/Units',
-                parameters: { $$updateGroupId: 'unitObjGroup' },
+                parameters: { $$updateGroupId: 'unitListGroup' },
                 sorter : { path: 'code' }
             }" selectionChange="onUnitSelect" updateFinished="onListUpdateFinished" mode="SingleSelectMaster" growing="false" growingScrollToLoad="true">
             <headerToolbar>
@@ -11,6 +11,7 @@
                     <Button press="onNavBack" icon="sap-icon://nav-back"/>
                     <ToolbarSpacer/>
                     <Button press="onAddUnit" icon="sap-icon://add"/>
+                    <Button press="onDeleteUnit" icon="sap-icon://delete"/>
                 </OverflowToolbar>
             </headerToolbar>
             <items>

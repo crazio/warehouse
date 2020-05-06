@@ -8,7 +8,7 @@ sap.ui.define(["customizing/controller/BaseController"], function (
       this._LINK_MAPPER = {
         uomLink: "RouteUnitMaster",
         convLink: "RouteConversion",
-        nrLink: "value3",
+        nrLink: "RouteNumberRange",
       };
     },
 

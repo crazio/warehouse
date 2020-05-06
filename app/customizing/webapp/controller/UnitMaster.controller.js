@@ -2,20 +2,31 @@ sap.ui.define(
   [
     "customizing/controller/BaseController",
     "sap/m/MessageBox",
+    "sap/m/MessageToast",
     "sap/ui/core/Fragment",
+    "../model/models",
   ],
-  function (BaseController, MessageBox, Fragment) {
+  function (BaseController, MessageBox, MessageToast, Fragment, models) {
     "use strict";
 
     return BaseController.extend("customizing.controller.UnitMaster", {
       onInit: function () {
-        this.BATCH_GROUP_OBJ_UNIT = "unitObjGroup";
+        this.BATCH_GROUP_LIST_UNIT = "unitListGroup";
+        this.setModel(models.createNewUnitModel(), "newUnit");
         this.getRouter()
           .getRoute("RouteUnitMaster")
           .attachPatternMatched(this._onRouteMatched, this);
       },
 
-      _onRouteMatched: function (_) {
+      _setPageBusy: function (bBusy) {
+        this.getView().byId("idUnitMasterPage").setBusy(bBusy);
+      },
+
+      _setUIBusy: function (bBusy) {
+        this._setPageBusy(bBusy);
+      },
+
+      _onRouteMatched: function () {
         this._setListItemFirstOrSelected(this.getView().byId("idListUnit"));
       },
 
@@ -44,17 +55,24 @@ sap.ui.define(
       _setListItemFirstOrSelected: function (oList) {
         if (oList.getItems().length == 0) return;
         var oItem = oList.getSelectedItem() || oList.getItems()[0];
-        if (!oItem) return;
+        if (!oItem || !oItem.getBindingContext().getProperty("code")) return;
         oList.setSelectedItem(oItem);
         this._routeToDetail(oItem.getBindingContext().getProperty("code"));
       },
 
-      _showUnsavedDataDialog: function () {
-        MessageBox.show(this.getI18Text("unsavedDataExist"), {
-          icon: MessageBox.Icon.WARNING,
-          title: this.getI18Text("unsavedDataTitle"),
-          actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
-          onClose: this._onCloseUnsavedDataDialog.bind(this),
+      _showConfirmDialog: function (
+        sMsg,
+        sIcon,
+        sTitle,
+        aActions,
+        fnOnClose,
+        bI18nTexts
+      ) {
+        MessageBox.show(bI18nTexts ? this.getI18Text(sMsg) : sMsg, {
+          icon: sIcon,
+          title: bI18nTexts ? this.getI18Text(sTitle) : sTitle,
+          actions: aActions,
+          onClose: fnOnClose.bind(this),
         });
       },
 
@@ -63,6 +81,21 @@ sap.ui.define(
           this._resetPendingChanges(this.BATCH_GROUP_OBJ_UNIT);
           this._navBack();
         }
+      },
+
+      _onDeleteUnitSuccess: function () {
+        MessageToast.show(this.getI18Text("deleteSuccessfull"));
+      },
+
+      _onDeleteUnitError: function (oError) {
+        MessageBox.error(oError.message);
+      },
+
+      _onCloseDeleteUnitDialog: function () {
+        this._getSelectedItem()
+          .getBindingContext()
+          .delete("$auto")
+          .then(this._onDeleteUnitSuccess.bind(this), this._onDeleteUnitError.bind(this));
       },
 
       _navBack: function () {
@@ -75,12 +108,48 @@ sap.ui.define(
         oDialog.open();
       },
 
+      _onUnitCreateSuccess: function () {
+        this._setUIBusy(false);
+        MessageToast.show(this.getI18Text("unitCreated"));
+        this.getModel().refresh();
+      },
+
+      _onUnitCreateError: function (oError) {
+        this._setUIBusy(false);
+        MessageBox.error(oError.message);
+      },
+
+      _submitBatch: function () {
+        this.getModel()
+          .submitBatch(this.BATCH_GROUP_LIST_UNIT)
+          .then(
+            this._onUnitCreateSuccess.bind(this),
+            this._onUnitCreateError.bind(this)
+          );
+      },
+
+      _resetNewUnitValues: function () {
+        var oModel = this.getView().getModel("newUnit");
+        $.each(Object.keys(oModel.getData()), function (_, key) {
+          oModel.setProperty("/" + key, "");
+        });
+      },
+
+      onNewUnitInputChange: function (oEvent) {
+        var oInput = oEvent.getSource();
+        oInput.setValue(oInput.getValue().toUpperCase());
+      },
+
       onListUpdateFinished: function (oEvent) {
         this._setListItemFirstOrSelected(oEvent.getSource());
       },
 
+      _getSelectedItem: function () {
+        return this.getView().byId("idListUnit").getSelectedItem();
+      },
+
       onUnitSelect: function (oEvent) {
-        debugger;
+        this._resetPendingChanges("unitObjGroup");
         this._routeToDetail(
           oEvent
             .getParameter("listItem")
@@ -91,7 +160,14 @@ sap.ui.define(
 
       onNavBack: function () {
         if (this._checkPendingChanges()) {
-          this._showUnsavedDataDialog();
+          this._showConfirmDialog(
+            "unsavedDataExist",
+            MessageBox.Icon.WARNING,
+            "unsavedDataTitle",
+            [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+            this._onCloseUnsavedDataDialog,
+            true
+          );
         } else {
           this._navBack();
         }
@@ -109,7 +185,27 @@ sap.ui.define(
         }
       },
 
-      onCreateUnitPress: function () {},
+      onCreateUnitPress: function () {
+        var oData = this.getView().getModel("newUnit").getData();
+        this._getListItemsBinding().create(oData);
+        this._setUIBusy(true);
+        this._submitBatch(this.BATCH_GROUP_LIST_UNIT);
+        this._resetNewUnitValues();
+        this.byId("idUnitCreateDialog").close();
+      },
+
+      onDeleteUnit: function () {
+        this._showConfirmDialog(
+          this.getI18Text("wantToDeleteText") +
+            " " +
+            this._getSelectedItem().getBindingContext().getProperty("code"),
+          MessageBox.Icon.WARNING,
+          this.getI18Text("deleteUoMTitle"),
+          [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+          this._onCloseDeleteUnitDialog,
+          false
+        );
+      },
 
       onCancelUnitPress: function () {
         this.byId("idUnitCreateDialog").close();

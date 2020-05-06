@@ -6,5 +6,5 @@ entity NumberRanges : cuid {
     startValue  : String(20) not null;
     endValue    : String(20) not null;
     current     : String(20) not null;
-    description : localized String(100);
+    description : localized String(50);
 }

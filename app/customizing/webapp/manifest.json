@@ -125,6 +125,11 @@
           "target": ["TargetConversion"]
         },
         {
+          "name": "RouteNumberRange",
+          "pattern": "numberRanges",
+          "target": ["TargetNumberRange"]
+        },
+        {
           "name": "RouteUnitMaster",
           "pattern": "Units",
           "target": ["TargetUnitMaster", "TargetUnitDetail"]
@@ -147,6 +152,12 @@
           "clearControlAggregation": false,
           "viewName": "Conversion",
           "viewId": "conversionView"
+        },
+        "TargetNumberRange": {
+          "viewType": "XML",
+          "clearControlAggregation": false,
+          "viewName": "NumberRange",
+          "viewId": "numberRangeView"
         },
         "SplitUnitTarget": {
           "viewName": "UnitSplit"

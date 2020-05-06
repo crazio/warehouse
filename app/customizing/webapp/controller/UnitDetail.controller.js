@@ -1,16 +1,11 @@
 sap.ui.define(
-  [
-    "customizing/controller/BaseController",
-    "sap/m/MessageToast",
-    "../model/models",
-  ],
-  function (BaseController, MessageToast, models) {
+  ["customizing/controller/BaseController", "sap/m/MessageToast"],
+  function (BaseController, MessageToast) {
     "use strict";
 
     return BaseController.extend("customizing.controller.UnitDetail", {
       onInit: function () {
         this.BATCH_GROUP_OBJ_UNIT = "unitObjGroup";
-        this.setModel(models.createNewUnitModel(), "newUnit");
         this.getRouter()
           .getRoute("RouteUnitDetail")
           .attachPatternMatched(this._onRouteMatched, this);
@@ -64,14 +59,14 @@ sap.ui.define(
         this._setEnabledSaveCancel(!bBusy);
       },
 
-      _onSaveSuccess: function () {
+      _onUnitSaveSuccess: function () {
         this._setUIBusy(false);
         MessageToast.show(this.getI18Text("saveSuccess"));
         this._changeSaveCancelState();
         this.getModel().refresh();
       },
 
-      _onSaveError: function (oError) {
+      _onUnitSaveError: function (oError) {
         this._setUIBusy(false);
         MessageBox.error(oError.message);
       },
@@ -79,7 +74,7 @@ sap.ui.define(
       _submitBatch: function () {
         this.getModel()
           .submitBatch(this.BATCH_GROUP_OBJ_UNIT)
-          .then(this._onSaveSuccess.bind(this), this._onSaveError.bind(this));
+          .then(this._onUnitSaveSuccess.bind(this), this._onUnitSaveError.bind(this));
       },
 
       onUnitDescrChange: function () {

@@ -1,0 +1,56 @@
+<mvc:View controllerName="customizing.controller.NumberRange" displayBlock="true" id="numberRangeView" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns:core="sap.ui.core" 
+    xmlns="sap.m">
+    <Page enableScrolling="false" showHeader="true" showNavButton="true" navButtonPress="onNavBack" title="{i18n>defineNumberRanges}" titleAlignment="Center">
+        <content>
+            <Table id="idNumberRangeTable" growing="true" growingThreshold="10" items="{ path: '/NumberRanges',
+                                                                                         parameters: { $$updateGroupId: 'nrGroup' },
+                                                                                         sorter: { path: 'ID' }
+                                                                                       }">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>numberRanges}" level="H2"/>
+                        <ToolbarSpacer/>
+                        <Button icon="sap-icon://add" text="{i18n>addEntry}" press="onNumberRangeAdd"/>
+                        <Button icon="sap-icon://delete" text="{i18n>removeAll}" press="onNumberRangeRemoveAll"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="15%">
+                        <Text text="{i18n>startValue}"/>
+                    </Column>
+                    <Column width="15%">
+                        <Text text="{i18n>endValue}"/>
+                    </Column>
+                    <Column width="15%">
+                        <Text text="{i18n>currentValue}"/>
+                    </Column>
+                    <Column width="40%">
+                        <Text text="{i18n>descr}"/>
+                    </Column>
+                    <Column>
+                        <Text text="{i18n>actions}"/>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Input value="{startValue}" editable="false"/>
+                            <Input value="{endValue}" editable="false"/>
+                            <Input value="{current}" editable="false"/>
+                            <Input value="{description}" editable="false"/>
+                            <HBox class="sapUiContentPadding">
+                                <Button icon="sap-icon://edit" press="onNumberRangeEdit" class="sapUiTinyMarginEnd"/>
+                                <Button icon="sap-icon://save" press="onNumberRangeSave" class="sapUiTinyMarginEnd" enabled="false"/>
+                                <Button icon="sap-icon://cancel" press="onNumberRangeCancel" class="sapUiTinyMarginEnd" enabled="false"/>
+                                <Button icon="sap-icon://delete" press="onNumberRangeDelete" class="sapUiTinyMarginEnd"/>
+                            </HBox>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
+    

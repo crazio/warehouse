@@ -27,13 +27,14 @@ sap.ui.define(
         this.getView().byId(sControl).setBusy(bBusy);
       },
 
-      _onSaveSuccess: function () {
+      _onConvSaveSuccess: function () {
         this._setUIBusy(false);
         MessageToast.show(this.getI18Text("saveSuccess"));
         this._changeSaveCancelState();
+        this._getTableRowsBinding().refresh();
       },
 
-      _onSaveError: function (oError) {
+      _onConvSaveError: function (oError) {
         this._setUIBusy(false);
         MessageBox.error(oError.message);
       },
@@ -41,7 +42,10 @@ sap.ui.define(
       _submitBatch: function () {
         this.getModel()
           .submitBatch(this.BATCH_GROUP_CONV)
-          .then(this._onSaveSuccess.bind(this), this._onSaveError.bind(this));
+          .then(
+            this._onConvSaveSuccess.bind(this),
+            this._onConvSaveError.bind(this)
+          );
       },
 
       _setButtonsEnabled: function (bEnabled) {
@@ -129,11 +133,11 @@ sap.ui.define(
         }
       },
 
-      onInputValueChange: function (_) {
+      onInputValueChange: function () {
         this._changeSaveCancelState();
       },
 
-      onAddPress: function (_) {
+      onAddPress: function () {
         var oBinding = this._getTableRowsBinding();
         oBinding.create({
           unitFrom: "",
@@ -144,7 +148,7 @@ sap.ui.define(
         this._setEnabledSaveCancel();
       },
 
-      onDeletePress: function (_) {
+      onDeletePress: function () {
         var oTable = this.getView().byId("idConvTable");
         $.each(oTable.getSelectedIndices().reverse(), function (
           _,
@@ -155,12 +159,12 @@ sap.ui.define(
         oTable.setSelectedIndex(-1);
       },
 
-      onCancelPress: function (_) {
+      onCancelPress: function () {
         this._resetPendingChanges(this.BATCH_GROUP_CONV);
         this._changeSaveCancelState();
       },
 
-      onSavePress: function (_) {
+      onSavePress: function () {
         this._setUIBusy(true);
         this._submitBatch();
       },
