@@ -26,7 +26,7 @@
                     <Column width="15%">
                         <Text text="{i18n>currentValue}"/>
                     </Column>
-                    <Column width="40%">
+                    <Column width="37%">
                         <Text text="{i18n>descr}"/>
                     </Column>
                     <Column>
@@ -35,16 +35,65 @@
                 </columns>
                 <items>
                     <ColumnListItem>
+                        <customData>
+                            <core:CustomData key="nrId" value="{ID}"/>
+                        </customData>
                         <cells>
-                            <Input value="{startValue}" editable="false"/>
-                            <Input value="{endValue}" editable="false"/>
-                            <Input value="{current}" editable="false"/>
-                            <Input value="{description}" editable="false"/>
+                            <Input value="{startValue}" editable="false" liveChange="onNumberRangeInputChange" valueLiveUpdate="true">
+                                <customData>
+                                    <core:CustomData key="nrInput" value="true"/>
+                                    <core:CustomData key="inputType" value="startValue"/>
+                                    <core:CustomData key="readonly" value="false"/>
+                                </customData>
+                            </Input>
+                            <Input value="{endValue}" editable="false" liveChange="onNumberRangeInputChange" valueLiveUpdate="true">
+                                <customData>
+                                    <core:CustomData key="nrInput" value="true"/>
+                                    <core:CustomData key="readonly" value="false"/>
+                                </customData>
+                            </Input>
+                            <Input value="{current}" editable="false" liveChange="onNumberRangeInputChange" valueLiveUpdate="true">
+                                <customData>
+                                    <core:CustomData key="nrInput" value="true"/>
+                                    <core:CustomData key="inputType" value="currentValue"/>
+                                    <core:CustomData key="readonly" value="true"/>
+                                </customData>
+                            </Input>
+                            <Input value="{description}" editable="false" liveChange="onNumberRangeInputChange" valueLiveUpdate="true">
+                                <customData>
+                                    <core:CustomData key="nrInput" value="true"/>
+                                    <core:CustomData key="readonly" value="false"/>
+                                </customData>
+                            </Input>
                             <HBox class="sapUiContentPadding">
-                                <Button icon="sap-icon://edit" press="onNumberRangeEdit" class="sapUiTinyMarginEnd"/>
-                                <Button icon="sap-icon://save" press="onNumberRangeSave" class="sapUiTinyMarginEnd" enabled="false"/>
-                                <Button icon="sap-icon://cancel" press="onNumberRangeCancel" class="sapUiTinyMarginEnd" enabled="false"/>
-                                <Button icon="sap-icon://delete" press="onNumberRangeDelete" class="sapUiTinyMarginEnd"/>
+                                <customData>
+                                    <core:CustomData key="btnBox" value="true"/>
+                                </customData>
+                                <Button icon="sap-icon://edit" press="onNumberRangeEdit" class="sapUiTinyMarginEnd">
+                                    <customData>
+                                        <core:CustomData key="btnRole" value="edit"/>
+                                    </customData>
+                                </Button>
+                                <Button icon="sap-icon://save" press="onNumberRangeSave" class="sapUiTinyMarginEnd" enabled="false">
+                                    <customData>
+                                        <core:CustomData key="btnRole" value="save"/>
+                                    </customData>
+                                </Button>
+                                <Button icon="sap-icon://cancel" press="onNumberRangeCancel" class="sapUiTinyMarginEnd" enabled="false">
+                                    <customData>
+                                        <core:CustomData key="btnRole" value="cancel"/>
+                                    </customData>
+                                </Button>
+                                <Button icon="sap-icon://reset" press="onNumberRangeReset" class="sapUiTinyMarginEnd" enabled="false">
+                                    <customData>
+                                        <core:CustomData key="btnRole" value="reset"/>
+                                    </customData>
+                                </Button>
+                                <Button icon="sap-icon://delete" press="onNumberRangeDelete" class="sapUiTinyMarginEnd">
+                                    <customData>
+                                        <core:CustomData key="btnRole" value="delete"/>
+                                    </customData>
+                                </Button>
                             </HBox>
                         </cells>
                     </ColumnListItem>
