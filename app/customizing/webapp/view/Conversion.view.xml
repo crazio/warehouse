@@ -1,0 +1,66 @@
+<mvc:View controllerName="customizing.controller.Conversion" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns:core="sap.ui.core" 
+    xmlns:l="sap.ui.layout" 
+    xmlns:table="sap.ui.table" 
+    xmlns="sap.m" id="conversionView" displayBlock="true">
+    <Page enableScrolling="false" showHeader="true" showNavButton="true" navButtonPress="onNavBack" title="{i18n>defineConversions}" titleAlignment="Center">
+        <table:Table rows="{ path: '/Conversions',
+                             parameters: { $$updateGroupId: 'convGroup' },
+                             sorter: { path: 'unitFrom' }
+                           }" selectionMode="MultiToggle" visibleRowCount="16" ariaLabelledBy="title" id="idConvTable">
+            <table:extension>
+                <HBox class="sapUiSmallMargin">
+                    <items>
+                        <core:Icon src="sap-icon://share" alt="Cart" size="1.25rem"/>
+                        <Title text="{i18n>defineConversions}" titleStyle="H3" class="sapUiTinyMarginBeginEnd"/>
+                    </items>
+                </HBox>
+                <OverflowToolbar id="idToolBar">
+                    <Title text="{i18n>conversions}"/>
+                    <ToolbarSpacer/>
+                    <Button icon="sap-icon://add" id="idConvAdd" text="{i18n>addEntry}" press="onAddPress"/>
+                    <Button icon="sap-icon://delete" id="idConvDelete" text="{i18n>deleteEntry}" press="onDeletePress"/>
+                    <Button icon="sap-icon://save" id="idConvSave" text="{i18n>saveChanges}" press="onSavePress"/>
+                    <Button icon="sap-icon://cancel" id="idConvCancel" text="{i18n>cancelChanges}" press="onCancelPress"/>
+                </OverflowToolbar>
+            </table:extension>
+            <table:columns>
+                <table:Column width="20%">
+                    <Label text="{i18n>unitFrom}"/>
+                    <table:template>
+                        <ComboBox selectedKey="{unitFrom}" items="{/Units}" width="100%" selectionChange="onUnitSelection">
+                            <core:Item text="{name}" key="{code}"/>
+                        </ComboBox>
+                    </table:template>
+                </table:Column>
+                <table:Column width="20%">
+                    <Label text="{i18n>unitTo}"/>
+                    <table:template>
+                        <ComboBox selectedKey="{unitTo}" items="{/Units}" width="100%" selectionChange="onUnitSelection">
+                            <core:Item text="{name}" key="{code}"/>
+                        </ComboBox>
+                    </table:template>
+                </table:Column>
+                <table:Column width="30%">
+                    <Label text="{i18n>numerator}"/>
+                    <table:template>
+                        <Input type="Number" value="{ path: 'numerator', 
+                                                      type: 'sap.ui.model.type.Integer',
+                                                      constraints: { minimum: '1', maximum: '2000000000' }
+                                                    }" liveChange="onInputValueChange" valueLiveUpdate="true"/>
+                    </table:template>
+                </table:Column>
+                <table:Column width="30%">
+                    <Label text="{i18n>denominator}"/>
+                    <table:template>
+                        <Input type="Number" value="{ path: 'denominator', 
+                                                      type: 'sap.ui.model.type.Integer',
+                                                      constraints: { minimum: '1', maximum: '2000000000' }
+                                                    }" liveChange="onInputValueChange" valueLiveUpdate="true"/>
+                    </table:template>
+                </table:Column>
+            </table:columns>
+        </table:Table>
+    </Page>
+</mvc:View>

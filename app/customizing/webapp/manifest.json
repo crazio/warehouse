@@ -1,0 +1,180 @@
+{
+  "_version": "1.14.0",
+  "sap.app": {
+    "id": "customizing",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/customizing/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "sourceTemplate": {
+      "id": "ui5template.basicSAPUI5ApplicationProject",
+      "version": "1.40.12"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "configApplicationDisplay": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "Customizing",
+          "action": "Display",
+          "title": "{{appTitle}}",
+          "subTitle": "{{appDescription}}",
+          "icon": "sap-icon://customize"
+        }
+      },
+      "outbounds": {}
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "fullWidth": true,
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": false
+    },
+    "supportedThemes": ["sap_belize"]
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "customizing.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "handleValidation": true,
+    "dependencies": {
+      "minUI5Version": "1.65.6",
+      "libs": {
+        "sap.ui.layout": {},
+        "sap.ui.core": {},
+        "sap.m": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "settings": {
+          "autoExpandSelect": true,
+          "synchronizationMode": "None",
+          "operationMode": "Server"
+        }
+      },
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "customizing.i18n.i18n"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "customizing.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "bypassed": {
+          "target": ["notFound"]
+        },
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "RouteMain",
+          "pattern": "",
+          "target": ["TargetMain"]
+        },
+        {
+          "name": "RouteConversion",
+          "pattern": "conversions",
+          "target": ["TargetConversion"]
+        },
+        {
+          "name": "RouteNumberRange",
+          "pattern": "numberRanges",
+          "target": ["TargetNumberRange"]
+        },
+        {
+          "name": "RouteUnitMaster",
+          "pattern": "Units",
+          "target": ["TargetUnitMaster", "TargetUnitDetail"]
+        },
+        {
+          "name": "RouteUnitDetail",
+          "pattern": "Units/{code}",
+          "target": ["TargetUnitMaster", "TargetUnitDetail"]
+        }
+      ],
+      "targets": {
+        "TargetMain": {
+          "viewType": "XML",
+          "clearControlAggregation": false,
+          "viewName": "Main",
+          "viewId": "mainView"
+        },
+        "TargetConversion": {
+          "viewType": "XML",
+          "clearControlAggregation": false,
+          "viewName": "Conversion",
+          "viewId": "conversionView"
+        },
+        "TargetNumberRange": {
+          "viewType": "XML",
+          "clearControlAggregation": false,
+          "viewName": "NumberRange",
+          "viewId": "numberRangeView"
+        },
+        "SplitUnitTarget": {
+          "viewName": "UnitSplit"
+        },
+        "TargetUnitMaster": {
+          "viewName": "UnitMaster",
+          "parent": "SplitUnitTarget",
+          "controlId": "splitContainerUnit",
+          "controlAggregation": "masterPages"
+        },
+        "TargetUnitDetail": {
+          "viewName": "UnitDetail",
+          "parent": "SplitUnitTarget",
+          "controlId": "splitContainerUnit",
+          "controlAggregation": "detailPages"
+        }
+      }
+    }
+  }
+}

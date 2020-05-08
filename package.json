@@ -1,0 +1,46 @@
+{
+    "name": "warehouse",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "repository": "<Add your repository here>",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+        "@sap/cds": "^3.33.1",
+        "express": "^4.17.1",
+        "@sap/hana-client": "^2.4.177"
+    },
+    "scripts": {
+        "start": "npx cds run",
+        "build": "cds build/all --clean",
+        "deploy-sqlite": "cds deploy -2 sqlite:srv/local.db --no-save",
+        "local": "npm run build && npm run deploy-sqlite && npm run start"
+    },
+    "cds": {
+        "requires": {
+            "db": {
+                "kind": "hana"
+            }
+        },
+        "[development]": {
+            "requires": {
+                "db": {
+                    "kind": "sqlite",
+                    "model": [
+                        "db",
+                        "srv"
+                    ],
+                    "credentials": {
+                        "database": "srv/local.db"
+                    }
+                }
+            }
+        },
+        "odata": {
+            "version": "v4"
+        }
+    },
+    "devDependencies": {
+        "sqlite3": "^4.1.1"
+    }
+}
