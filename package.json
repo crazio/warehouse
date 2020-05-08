@@ -6,14 +6,15 @@
     "license": "UNLICENSED",
     "private": true,
     "dependencies": {
-        "@sap/cds": "^3.33.1",
-        "express": "^4.17.1",
-        "@sap/hana-client": "^2.4.177"
+        "@sap/cds": "^3.34.1",
+        "@sap/hana-client": "^2.4.196",
+        "express": "^4.17.1"
     },
     "scripts": {
         "start": "npx cds run",
         "build": "cds build/all --clean",
         "deploy-sqlite": "cds deploy -2 sqlite:srv/local.db --no-save",
+        "restart": "npm run build && npm run start",
         "local": "npm run build && npm run deploy-sqlite && npm run start"
     },
     "cds": {
@@ -41,6 +42,6 @@
         }
     },
     "devDependencies": {
-        "sqlite3": "^4.1.1"
+        "sqlite3": "^4.2.0"
     }
 }

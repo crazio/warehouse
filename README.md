@@ -1,8 +1,8 @@
 # Getting Started
 
-Welcome to your new project.
+Welcome to Warehouse Management Sample
 
-It contains these folders and files, following our recommended project layout:
+It contains these folders and files, following recommended project layout:
 
 File / Folder | Purpose
 ---------|----------
@@ -13,13 +13,10 @@ File / Folder | Purpose
 `readme.md` | this getting started guide
 
 
-## Next Steps...
+## Project guide...
 
-- Open a new terminal and run  `cds watch`
-- ( in VSCode simply choose _**Terminal** > Run Task > cds watch_ )
-- Start adding content, e.g. a [db/schema.cds](db/schema.cds), ...
-
-
-## Learn more...
-
-Learn more at https://cap.cloud.sap/docs/get-started/
+To run project
+- clone project from this repository
+- run `npm run install`
+- run `npm run local`
+- after that you can run project `npm run start`

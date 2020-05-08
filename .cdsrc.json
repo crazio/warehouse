@@ -1,28 +1,25 @@
 {
-    "build": {
-        "target": ".",
-        "tasks": [
-            {
-                "for": "node-cf",
-                "src": "srv",
-                "options": {
-                    "model": [
-                        "db",
-                        "srv",
-                        "app"
-                    ]
-                }
-            },
-            {
-                "for": "hana",
-                "src": "db",
-                "options": {
-                    "model": [
-                        "db",
-                        "srv"
-                    ]
-                }
-            }
-        ]
-    }
+  "build": {
+    "target": ".",
+    "tasks": [
+      {
+        "for": "node-cf",
+        "src": "srv",
+        "options": {
+          "model": ["db", "srv", "app"]
+        }
+      },
+      {
+        "for": "hana",
+        "src": "db",
+        "options": {
+          "model": ["db", "srv"]
+        }
+      },
+      {
+        "for": "fiori",
+        "src": "app/product"
+      }
+    ]
+  }
 }
