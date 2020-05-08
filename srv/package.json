@@ -2,8 +2,8 @@
     "name": "srv",
     "version": "1.0.0",
     "dependencies": {
-        "@sap/cds": "^3.33.1",
-        "@sap/hana-client": "^2.4.177",
+        "@sap/cds": "^3.34.1",
+        "@sap/hana-client": "^2.4.196",
         "express": "^4.17.1"
     },
     "engines": {

@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="com.leverx.warehouse.ProductService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Products" EntityType="com.leverx.warehouse.ProductService.Products">
+          <NavigationPropertyBinding Path="weightUnitCode" Target="Units"/>
+          <NavigationPropertyBinding Path="volumeUnitCode" Target="Units"/>
+          <NavigationPropertyBinding Path="texts" Target="Products_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Products_texts"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="Products"/>
+        </EntitySet>
+        <EntitySet Name="Products_texts" EntityType="com.leverx.warehouse.ProductService.Products_texts"/>
+        <EntitySet Name="Units" EntityType="com.leverx.warehouse.ProductService.Units">
+          <NavigationPropertyBinding Path="texts" Target="Units_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Units_texts"/>
+        </EntitySet>
+        <EntitySet Name="Units_texts" EntityType="com.leverx.warehouse.ProductService.Units_texts"/>
+      </EntityContainer>
+      <EntityType Name="DraftAdministrativeData">
+        <Key>
+          <PropertyRef Name="DraftUUID"/>
+        </Key>
+        <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+        <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+      </EntityType>
+      <EntityType Name="Products">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="number" Type="Edm.String" MaxLength="20"/>
+        <Property Name="description" Type="Edm.String" MaxLength="200"/>
+        <Property Name="weight" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="weightUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="weightUnitCode" Type="com.leverx.warehouse.ProductService.Units">
+          <ReferentialConstraint Property="weightUnit" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="volume" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="volumeUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="volumeUnitCode" Type="com.leverx.warehouse.ProductService.Units">
+          <ReferentialConstraint Property="volumeUnit" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <NavigationProperty Name="texts" Type="Collection(com.leverx.warehouse.ProductService.Products_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="com.leverx.warehouse.ProductService.Products_texts">
+          <ReferentialConstraint Property="ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="com.leverx.warehouse.ProductService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="com.leverx.warehouse.ProductService.Products"/>
+      </EntityType>
+      <EntityType Name="Products_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="description" Type="Edm.String" MaxLength="200"/>
+      </EntityType>
+      <EntityType Name="Units">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <NavigationProperty Name="texts" Type="Collection(com.leverx.warehouse.ProductService.Units_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="com.leverx.warehouse.ProductService.Units_texts">
+          <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Units_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftUUID">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/CreationDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/CreatedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftIsCreatedByMe">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/LastChangeDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/LastChangedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/InProcessByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftIsProcessedByMe">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products">
+        <Annotation Term="UI.ConnectedFields" Qualifier="ProductNumberDescr">
+          <Record Type="UI.ConnectedFieldsType">
+            <PropertyValue Property="Data">
+              <Record Type="Core.Dictionary">
+                <PropertyValue Property="Description">
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="description"/>
+                  </Record>
+                </PropertyValue>
+                <PropertyValue Property="Number">
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="number"/>
+                  </Record>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="Label" String="Product"/>
+            <PropertyValue Property="Template" String="{Number}-{Description}"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="{i18n>generalInfo}"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneralInfo"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="GeneralInfo">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="number"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="description"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="weight"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="weightUnit"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="volume"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="volumeUnit"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="Description">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="description"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="number"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="TypeName" String="Product"/>
+            <PropertyValue Property="TypeNamePlural" String="Products"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+              <PropertyValue Property="Target" AnnotationPath="@UI.ConnectedFields#ProductNumberDescr"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="weight"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="weightUnit"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>number</PropertyPath>
+            <PropertyPath>description</PropertyPath>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.EntityContainer/Products">
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="com.leverx.warehouse.ProductService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="com.leverx.warehouse.ProductService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="com.leverx.warehouse.ProductService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/number">
+        <Annotation Term="Common.Label" String="Number"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/description">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/weight">
+        <Annotation Term="Common.Label" String="Weight"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/weightUnit">
+        <Annotation Term="Common.Label" String="Weight Unit"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/volume">
+        <Annotation Term="Common.Label" String="Volume"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/volumeUnit">
+        <Annotation Term="Common.Label" String="Volume Unit"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units">
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Path>name</Path>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units/name">
+        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units/descr">
+        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units_texts/name">
+        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units_texts/descr">
+        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="com.leverx.warehouse.ProductService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Products" EntityType="com.leverx.warehouse.ProductService.Products">
+          <NavigationPropertyBinding Path="weightUnitCode" Target="Units"/>
+          <NavigationPropertyBinding Path="volumeUnitCode" Target="Units"/>
+          <NavigationPropertyBinding Path="texts" Target="Products_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Products_texts"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="Products"/>
+        </EntitySet>
+        <EntitySet Name="Products_texts" EntityType="com.leverx.warehouse.ProductService.Products_texts"/>
+        <EntitySet Name="Units" EntityType="com.leverx.warehouse.ProductService.Units">
+          <NavigationPropertyBinding Path="texts" Target="Units_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Units_texts"/>
+        </EntitySet>
+        <EntitySet Name="Units_texts" EntityType="com.leverx.warehouse.ProductService.Units_texts"/>
+      </EntityContainer>
+      <EntityType Name="DraftAdministrativeData">
+        <Key>
+          <PropertyRef Name="DraftUUID"/>
+        </Key>
+        <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+        <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+      </EntityType>
+      <EntityType Name="Products">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="number" Type="Edm.String" MaxLength="20"/>
+        <Property Name="description" Type="Edm.String" MaxLength="200"/>
+        <Property Name="weight" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="weightUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="weightUnitCode" Type="com.leverx.warehouse.ProductService.Units">
+          <ReferentialConstraint Property="weightUnit" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="volume" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="volumeUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="volumeUnitCode" Type="com.leverx.warehouse.ProductService.Units">
+          <ReferentialConstraint Property="volumeUnit" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <NavigationProperty Name="texts" Type="Collection(com.leverx.warehouse.ProductService.Products_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="com.leverx.warehouse.ProductService.Products_texts">
+          <ReferentialConstraint Property="ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="com.leverx.warehouse.ProductService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="com.leverx.warehouse.ProductService.Products"/>
+      </EntityType>
+      <EntityType Name="Products_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="description" Type="Edm.String" MaxLength="200"/>
+      </EntityType>
+      <EntityType Name="Units">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <NavigationProperty Name="texts" Type="Collection(com.leverx.warehouse.ProductService.Units_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="com.leverx.warehouse.ProductService.Units_texts">
+          <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Units_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftUUID">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/CreationDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/CreatedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftIsCreatedByMe">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/LastChangeDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/LastChangedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/InProcessByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftIsProcessedByMe">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products">
+        <Annotation Term="UI.ConnectedFields" Qualifier="ProductNumberDescr">
+          <Record Type="UI.ConnectedFieldsType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record>
+                  <PropertyValue Property="Number">
+                    <Record Type="UI.DataField">
+                      <PropertyValue Property="Value" Path="number"/>
+                    </Record>
+                  </PropertyValue>
+                </Record>
+                <Record>
+                  <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                      <PropertyValue Property="Value" Path="description"/>
+                    </Record>
+                  </PropertyValue>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Label" String="Product"/>
+            <PropertyValue Property="Template" String="{Number}-{Description}"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="{i18n>generalInfo}"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneralInfo"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="GeneralInfo">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="number"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="description"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="weight"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="weightUnit"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="volume"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="volumeUnit"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="Description">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="description"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="number"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="TypeName" String="Product"/>
+            <PropertyValue Property="TypeNamePlural" String="Products"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+              <PropertyValue Property="Target" AnnotationPath="@UI.ConnectedFields#ProductNumberDescr"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="weight"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="weightUnit"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>number</PropertyPath>
+            <PropertyPath>description</PropertyPath>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.EntityContainer/Products">
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="com.leverx.warehouse.ProductService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="com.leverx.warehouse.ProductService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="com.leverx.warehouse.ProductService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/number">
+        <Annotation Term="Common.Label" String="Number"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/description">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/weight">
+        <Annotation Term="Common.Label" String="Weight"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/weightUnit">
+        <Annotation Term="Common.Label" String="Weight Unit"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/volume">
+        <Annotation Term="Common.Label" String="Volume"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/volumeUnit">
+        <Annotation Term="Common.Label" String="Volume Unit"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units">
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Path>name</Path>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units/name">
+        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units/descr">
+        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units_texts/name">
+        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units_texts/descr">
+        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="com.leverx.warehouse.ProductService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Products" EntityType="com.leverx.warehouse.ProductService.Products">
+          <NavigationPropertyBinding Path="weightUnitCode" Target="Units"/>
+          <NavigationPropertyBinding Path="volumeUnitCode" Target="Units"/>
+          <NavigationPropertyBinding Path="texts" Target="Products_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Products_texts"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="Products"/>
+        </EntitySet>
+        <EntitySet Name="Products_texts" EntityType="com.leverx.warehouse.ProductService.Products_texts"/>
+        <EntitySet Name="Units" EntityType="com.leverx.warehouse.ProductService.Units">
+          <NavigationPropertyBinding Path="texts" Target="Units_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Units_texts"/>
+        </EntitySet>
+        <EntitySet Name="Units_texts" EntityType="com.leverx.warehouse.ProductService.Units_texts"/>
+      </EntityContainer>
+      <EntityType Name="DraftAdministrativeData">
+        <Key>
+          <PropertyRef Name="DraftUUID"/>
+        </Key>
+        <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+        <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+      </EntityType>
+      <EntityType Name="Products">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="number" Type="Edm.String" MaxLength="20"/>
+        <Property Name="description" Type="Edm.String" MaxLength="200"/>
+        <Property Name="weight" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="weightUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="weightUnitCode" Type="com.leverx.warehouse.ProductService.Units">
+          <ReferentialConstraint Property="weightUnit" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="volume" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="volumeUnit" Type="Edm.String" MaxLength="3"/>
+        <NavigationProperty Name="volumeUnitCode" Type="com.leverx.warehouse.ProductService.Units">
+          <ReferentialConstraint Property="volumeUnit" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <NavigationProperty Name="texts" Type="Collection(com.leverx.warehouse.ProductService.Products_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="com.leverx.warehouse.ProductService.Products_texts">
+          <ReferentialConstraint Property="ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="com.leverx.warehouse.ProductService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="com.leverx.warehouse.ProductService.Products"/>
+      </EntityType>
+      <EntityType Name="Products_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="description" Type="Edm.String" MaxLength="200"/>
+      </EntityType>
+      <EntityType Name="Units">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <NavigationProperty Name="texts" Type="Collection(com.leverx.warehouse.ProductService.Units_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="com.leverx.warehouse.ProductService.Units_texts">
+          <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Units_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+      </EntityType>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="com.leverx.warehouse.ProductService.Products"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="com.leverx.warehouse.ProductService.Products"/>
+      </Action>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftUUID">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/CreationDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/CreatedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftIsCreatedByMe">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/LastChangeDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/LastChangedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/InProcessByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.DraftAdministrativeData/DraftIsProcessedByMe">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products">
+        <Annotation Term="UI.ConnectedFields" Qualifier="ProductNumberDescr">
+          <Record Type="UI.ConnectedFieldsType">
+            <PropertyValue Property="Data">
+              <Record Type="Core.Dictionary">
+                <PropertyValue Property="Description">
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="description"/>
+                  </Record>
+                </PropertyValue>
+                <PropertyValue Property="Number">
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="number"/>
+                  </Record>
+                </PropertyValue>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="Label" String="Product"/>
+            <PropertyValue Property="Template" String="{Number}-{Description}"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="{i18n>generalInfo}"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneralInfo"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="GeneralInfo">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="number"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="description"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="weight"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="weightUnit"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="volume"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="volumeUnit"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="Description">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="description"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="number"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="TypeName" String="Product"/>
+            <PropertyValue Property="TypeNamePlural" String="Products"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+              <PropertyValue Property="Target" AnnotationPath="@UI.ConnectedFields#ProductNumberDescr"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="weight"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="weightUnit"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>number</PropertyPath>
+            <PropertyPath>description</PropertyPath>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.EntityContainer/Products">
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="com.leverx.warehouse.ProductService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="com.leverx.warehouse.ProductService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="com.leverx.warehouse.ProductService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/number">
+        <Annotation Term="Common.Label" String="Number"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/description">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/weight">
+        <Annotation Term="Common.Label" String="Weight"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/weightUnit">
+        <Annotation Term="Common.Label" String="Weight Unit"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/volume">
+        <Annotation Term="Common.Label" String="Volume"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/volumeUnit">
+        <Annotation Term="Common.Label" String="Volume Unit"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Products/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units">
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Path>name</Path>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units/name">
+        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units/descr">
+        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units_texts/name">
+        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+      </Annotations>
+      <Annotations Target="com.leverx.warehouse.ProductService.Units_texts/descr">
+        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
