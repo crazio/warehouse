@@ -115,6 +115,14 @@ sap.ui.define(
         );
       },
 
+      _findNewRow: function () {
+        return this._getFilteredByCustomDataSingle(
+          this._getNumberRangeTable().getItems(),
+          "nrId",
+          null
+        );
+      },
+
       _setEditModeDisabled: function () {
         var oRowInEditMode = this._findRowInEditMode();
         if (oRowInEditMode) this._setEditModeForRow(oRowInEditMode, false);
@@ -150,8 +158,22 @@ sap.ui.define(
         this._setEnabledSaveCancelForRow(oEditRow, this._checkPendingChanges());
       },
 
+      _updateNewRowIdEditModel: function () {
+        var oRow = this._findRowInEditMode();
+        if (!oRow) {
+          this._getEditRowModel().setProperty(
+            "/id",
+            this._getNumberRangeTable()
+              .getItems()[0]
+              .getBindingContext()
+              .getProperty("ID")
+          );
+        }
+      },
+
       _onNrSaveSuccess: function () {
         this._setUIBusy(false);
+        this._updateNewRowIdEditModel();
         this._changeSaveCancelState();
         MessageToast.show(this.getI18Text("saveSuccess"));
         this._getNumberRangeTable().getBinding("items").refresh();
@@ -284,12 +306,16 @@ sap.ui.define(
           "/id",
           oNewContext.getProperty("ID")
         );
-        var oNewRow = this._findRowInEditMode();
+        var oNewRow = this._findNewRow();
         this._setEditModeForRow(oNewRow, true);
         this._changeSaveCancelState(oNewRow);
       },
 
-      onNumberRangeRemoveAll: function (oEvent) {},
+      onNumberRangeRemoveAll: function () {
+        $.each(this._getNumberRangeTable().getItems(), function (_, oItem) {
+          oItem.getBindingContext().delete();
+        });
+      },
 
       onNumberRangeReset: function (oEvent) {
         this._resetCurrentValue(oEvent.getSource());

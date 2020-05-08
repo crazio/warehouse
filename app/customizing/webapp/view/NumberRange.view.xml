@@ -39,7 +39,10 @@
                             <core:CustomData key="nrId" value="{ID}"/>
                         </customData>
                         <cells>
-                            <Input value="{startValue}" editable="false" liveChange="onNumberRangeInputChange" valueLiveUpdate="true">
+                            <Input value="{ path: 'startValue',
+                                            type: 'sap.ui.model.type.String',
+                                            constraints: { minLength: 1, maxLength: 20 }
+                                          }" type="Number" editable="false" liveChange="onNumberRangeInputChange" valueLiveUpdate="true">
                                 <customData>
                                     <core:CustomData key="nrInput" value="true"/>
                                     <core:CustomData key="inputType" value="startValue"/>
