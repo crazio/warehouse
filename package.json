@@ -15,6 +15,7 @@
         "build": "cds build/all --clean",
         "deploy-sqlite": "cds deploy -2 sqlite:srv/local.db --no-save",
         "restart": "npm run build && npm run start",
+        "watch": "cds watch",
         "local": "npm run build && npm run deploy-sqlite && npm run start"
     },
     "cds": {
