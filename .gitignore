@@ -8,10 +8,14 @@ node_modules/
 package-lock.json
 target/
 
+srv/src/*
+srv/server.js
+srv/app.js
+
 # Web IDE, App Studio
 .che/
 .gen/
-
+.vscode
 # MTA
 *_mta_build_tmp
 *.mtar

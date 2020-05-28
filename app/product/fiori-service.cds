@@ -64,7 +64,8 @@ annotate services.ProductService.Products with @(
     number
     @title : '{i18n>number}'
     @Search.defaultSearchElement: true
-    @Common.FieldControl : #Mandatory;
+    @Common.FieldControl : #Mandatory
+    @Common.IsUpperCase : true;
 
     description
     @title : '{i18n>description}'

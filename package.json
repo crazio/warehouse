@@ -1,48 +1,56 @@
 {
-    "name": "warehouse",
-    "version": "1.0.0",
-    "description": "A simple CAP project.",
-    "repository": "<Add your repository here>",
-    "license": "UNLICENSED",
-    "private": true,
-    "dependencies": {
-        "@sap/cds": "^3.34.1",
-        "@sap/hana-client": "^2.4.196",
-        "express": "^4.17.1"
+  "name": "warehouse",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^3.34.1",
+    "@sap/hana-client": "^2.4.196",
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "start": "npx cds run",
+    "build": "cds build/all --clean",
+    "build:check": "tsc -p ./srv",
+    "build:src": "tsc -p ./srv/tsconfig.src.json",
+    "build:server": "tsc -p ./srv/tsconfig.server.json",
+    "build-ts": "npm run build:check && npm run build:src && npm run build:server",
+    "deploy-sqlite": "cds deploy -2 sqlite:srv/local.db --no-save",
+    "restart": "npm run build-be && npm run start",
+    "watch": "cds watch",
+    "build-be": "npm run build && npm run build-ts",
+    "local": "npm run build-be && npm run deploy-sqlite && npm run start"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "hana"
+      }
     },
-    "scripts": {
-        "start": "npx cds run",
-        "build": "cds build/all --clean",
-        "deploy-sqlite": "cds deploy -2 sqlite:srv/local.db --no-save",
-        "restart": "npm run build && npm run start",
-        "watch": "cds watch",
-        "local": "npm run build && npm run deploy-sqlite && npm run start"
-    },
-    "cds": {
-        "requires": {
-            "db": {
-                "kind": "hana"
-            }
-        },
-        "[development]": {
-            "requires": {
-                "db": {
-                    "kind": "sqlite",
-                    "model": [
-                        "db",
-                        "srv"
-                    ],
-                    "credentials": {
-                        "database": "srv/local.db"
-                    }
-                }
-            }
-        },
-        "odata": {
-            "version": "v4"
+    "[development]": {
+      "requires": {
+        "db": {
+          "kind": "sqlite",
+          "model": [
+            "db",
+            "srv"
+          ],
+          "credentials": {
+            "database": "srv/local.db"
+          }
         }
+      }
     },
-    "devDependencies": {
-        "sqlite3": "^4.2.0"
+    "odata": {
+      "version": "v4"
+    },
+    "features": {
+      "fiori_preview": false
     }
+  },
+  "devDependencies": {
+    "sqlite3": "^4.2.0"
+  }
 }
