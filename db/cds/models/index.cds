@@ -1,5 +1,3 @@
-namespace com.leverx.warehouse;
-
 using from './hu';
 using from './product';
 using from './packaging';

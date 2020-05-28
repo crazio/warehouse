@@ -1,4 +1,2 @@
-namespace com.leverx.warehouse;
-
-using from './customizing';
-using from './product';
+using from './customizing-service';
+using from './product-service';

@@ -1,28 +1,39 @@
 {
-    "name": "srv",
-    "version": "1.0.0",
-    "dependencies": {
-        "@sap/cds": "^3.34.1",
-        "@sap/hana-client": "^2.4.196",
-        "express": "^4.17.1"
+  "name": "srv",
+  "version": "1.0.0",
+  "dependencies": {
+    "@sap/cds": "^3.34.1",
+    "@sap/hana-client": "^2.4.196",
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": "^10"
+  },
+  "scripts": {
+    "start": "npx cds run"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "hana",
+        "model": [
+          "gen/csn.json"
+        ]
+      }
     },
-    "engines": {
-        "node": "^10"
+    "odata": {
+      "version": "v4"
     },
-    "scripts": {
-        "start": "npx cds run"
-    },
-    "cds": {
-        "requires": {
-            "db": {
-                "kind": "hana",
-                "model": [
-                    "gen/csn.json"
-                ]
-            }
-        },
-        "odata": {
-            "version": "v4"
-        }
+    "features": {
+      "fiori_preview": false
     }
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^13.13.5",
+    "class-validator": "^0.12.2",
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^3.8.3"
+  }
 }
